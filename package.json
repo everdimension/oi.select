@@ -6,6 +6,9 @@
         "type": "git",
         "url": "git://github.com/tamtakoe/oi.select.git"
     },
+    "scripts": {
+        "build": "gulp build"
+    },
     "devDependencies": {
         "gulp": "3.9.0",
         "gulp-watch": "4.2.4",

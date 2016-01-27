@@ -3,6 +3,41 @@ oi-select {
   position: relative;
   width: 100%;
 }
+oi-select .select-item__togglers {
+  position: relative;
+  display: inline-block;
+  width: 21px;
+  height: 10px;
+}
+oi-select .select__toggler--up,
+oi-select .select__toggler--down {
+  position: absolute;
+  left: 2px;
+  height: 18px;
+  padding: 3px;
+  background: transparent;
+  border: none;
+}
+oi-select .select__toggler--up:after,
+oi-select .select__toggler--down:after {
+  content: ' ';
+  display: inline-block;
+  border: 5px solid;
+  border-color: #444 transparent transparent;
+}
+oi-select .select__toggler--up {
+  top: -15px;
+}
+oi-select .select__toggler--up:after {
+  border-color: transparent transparent #444 transparent;
+}
+oi-select .select__toggler--down {
+  top: 4px;
+}
+oi-select .select__toggler--down:after {
+  position: relative;
+  top: -3px;
+}
 oi-select .select-search {
   cursor: text;
   border: 1px solid #d9d9d9;

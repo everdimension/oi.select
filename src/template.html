@@ -4,8 +4,16 @@
             ng-hide="listItemHide"
             ng-repeat="item in output track by $index"
             ng-class="{focused: backspaceFocus && $last}"
-            ng-click="removeItem($index)"
-            ng-bind-html="getSearchLabel(item)"></li>
+            ng-click="removeItem($index)">
+                <span class="select-search-list-item__text" ng-bind-html="getSearchLabel(item)"></span>
+                <span ng-if="itemControls">
+                    <span>{{item.count || 1}}</span>
+                    <span class="select-item__togglers">
+                        <button class="select__toggler--up" ng-click="addAmount($event, item, true)"></button>
+                        <button class="select__toggler--down" ng-click="addAmount($event, item)"></button>
+                    </span>
+                </span>
+            </li>
         <li class="select-search-list-item select-search-list-item_input"
             ng-class="{'select-search-list-item_hide': inputHide}"><input autocomplete="off"
                                                                           ng-model="query"

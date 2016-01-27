@@ -4,6 +4,34 @@ oi-select
   width 100%
 
   .select
+    &-item__togglers
+        position: relative
+        display: inline-block
+        width: 21px
+        height: 10px
+    &__toggler
+        &--up, &--down
+            position: absolute
+            left: 2px
+            height: 18px
+            padding: 3px
+            background: transparent
+            border: none
+            &:after
+              content: ' '
+              display: inline-block
+              border: 5px solid
+              border-color: #444 transparent transparent
+        &--up
+            top: -15px
+            &:after
+                border-color: transparent transparent #444 transparent
+        &--down
+            top: 4px
+            &:after
+              position: relative
+              top: -3px
+
     &-search
       cursor text
       border 1px solid #d9d9d9

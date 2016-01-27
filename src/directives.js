@@ -49,6 +49,7 @@ angular.module('oi.select')
                 removedItem,
                 multiple,
                 multipleLimit,
+                itemControls,
                 newItemFn;
 
             return function(scope, element, attrs, ctrl) {
@@ -140,6 +141,13 @@ angular.module('oi.select')
                     multiple = multipleValue === undefined ? angular.isDefined(attrs.multiple) : multipleValue;
 
                     element[multiple ? 'addClass' : 'removeClass']('multiple');
+                });
+
+                scope.$parent.$watch(attrs.itemControls, function(itemControlsValue) {
+                    itemControls = itemControlsValue === undefined ? angular.isDefined(attrs.itemControls) : itemControlsValue;
+                    scope.itemControls = !!itemControls;
+
+                    // element[multiple ? 'addClass' : 'removeClass']('multiple');
                 });
 
                 function valueChangedManually() { //case: clean model; prompt + editItem: 'correct'; initial value = defined/undefined
@@ -404,6 +412,17 @@ angular.module('oi.select')
                     return searchFilter(label, scope.oldQuery || scope.query, item, searchFilterOptionsFn(scope.$parent), element);
                 };
 
+                scope.addAmount = function ($event, item, action) {
+                    $event.stopPropagation();
+                    $event.preventDefault();
+                    item.count = item.count || 1;
+                    if (action) {
+                        item.count += 1;
+                    } else if (item.count !== 1) {
+                        item.count -= 1;
+                    }
+                };
+
                 scope.getDropdownLabel = function(item) {
                     var label = getLabel(item);
 
@@ -419,7 +438,7 @@ angular.module('oi.select')
 
                 resetMatches();
 
-                element[0].addEventListener('click', click, true); //triggered before add or delete item event
+                element[0].addEventListener('click', click, !itemControls); //triggered before add or delete item event
                 element.on('focus', focus);
                 element.on('blur', blur);
 

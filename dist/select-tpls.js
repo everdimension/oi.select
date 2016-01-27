@@ -395,6 +395,7 @@ angular.module('oi.select')
                 removedItem,
                 multiple,
                 multipleLimit,
+                itemControls,
                 newItemFn;
 
             return function(scope, element, attrs, ctrl) {
@@ -486,6 +487,13 @@ angular.module('oi.select')
                     multiple = multipleValue === undefined ? angular.isDefined(attrs.multiple) : multipleValue;
 
                     element[multiple ? 'addClass' : 'removeClass']('multiple');
+                });
+
+                scope.$parent.$watch(attrs.itemControls, function(itemControlsValue) {
+                    itemControls = itemControlsValue === undefined ? angular.isDefined(attrs.itemControls) : itemControlsValue;
+                    scope.itemControls = !!itemControls;
+
+                    // element[multiple ? 'addClass' : 'removeClass']('multiple');
                 });
 
                 function valueChangedManually() { //case: clean model; prompt + editItem: 'correct'; initial value = defined/undefined
@@ -750,6 +758,17 @@ angular.module('oi.select')
                     return searchFilter(label, scope.oldQuery || scope.query, item, searchFilterOptionsFn(scope.$parent), element);
                 };
 
+                scope.addAmount = function ($event, item, action) {
+                    $event.stopPropagation();
+                    $event.preventDefault();
+                    item.count = item.count || 1;
+                    if (action) {
+                        item.count += 1;
+                    } else if (item.count !== 1) {
+                        item.count -= 1;
+                    }
+                };
+
                 scope.getDropdownLabel = function(item) {
                     var label = getLabel(item);
 
@@ -765,7 +784,7 @@ angular.module('oi.select')
 
                 resetMatches();
 
-                element[0].addEventListener('click', click, true); //triggered before add or delete item event
+                element[0].addEventListener('click', click, !itemControls); //triggered before add or delete item event
                 element.on('focus', focus);
                 element.on('blur', blur);
 
@@ -1126,4 +1145,4 @@ angular.module('oi.select')
         return input;
     };
 });
-angular.module("oi.select").run(["$templateCache", function($templateCache) {$templateCache.put("src/template.html","<div class=select-search><ul class=select-search-list><li class=\"btn btn-default btn-xs select-search-list-item select-search-list-item_selection\" ng-hide=listItemHide ng-repeat=\"item in output track by $index\" ng-class=\"{focused: backspaceFocus && $last}\" ng-click=removeItem($index) ng-bind-html=getSearchLabel(item)></li><li class=\"select-search-list-item select-search-list-item_input\" ng-class=\"{\'select-search-list-item_hide\': inputHide}\"><input autocomplete=off ng-model=query ng-keyup=keyUp($event) ng-keydown=keyDown($event)></li><li class=\"select-search-list-item select-search-list-item_loader\" ng-show=showLoader></li></ul></div><div class=select-dropdown ng-show=isOpen><ul ng-if=isOpen class=select-dropdown-optgroup ng-repeat=\"(group, options) in groups\"><div class=select-dropdown-optgroup-header ng-if=\"group && options.length\" ng-bind-html=\"getGroupLabel(group, options)\"></div><li class=select-dropdown-optgroup-option ng-init=\"isDisabled = getDisableWhen(option)\" ng-repeat=\"option in options\" ng-class=\"{\'active\': selectorPosition === groupPos[group] + $index, \'disabled\': isDisabled, \'ungroup\': !group}\" ng-click=\"isDisabled || addItem(option)\" ng-mouseenter=\"setSelection(groupPos[group] + $index)\" ng-bind-html=getDropdownLabel(option)></li></ul></div>");}]);
+angular.module("oi.select").run(["$templateCache", function($templateCache) {$templateCache.put("src/template.html","<div class=select-search><ul class=select-search-list><li class=\"btn btn-default btn-xs select-search-list-item select-search-list-item_selection\" ng-hide=listItemHide ng-repeat=\"item in output track by $index\" ng-class=\"{focused: backspaceFocus && $last}\" ng-click=removeItem($index)><span class=select-search-list-item__text ng-bind-html=getSearchLabel(item)></span> <span ng-if=itemControls><span>{{item.count || 1}}</span> <span class=select-item__togglers><button class=select__toggler--up ng-click=\"addAmount($event, item, true)\"></button> <button class=select__toggler--down ng-click=\"addAmount($event, item)\"></button></span></span></li><li class=\"select-search-list-item select-search-list-item_input\" ng-class=\"{\'select-search-list-item_hide\': inputHide}\"><input autocomplete=off ng-model=query ng-keyup=keyUp($event) ng-keydown=keyDown($event)></li><li class=\"select-search-list-item select-search-list-item_loader\" ng-show=showLoader></li></ul></div><div class=select-dropdown ng-show=isOpen><ul ng-if=isOpen class=select-dropdown-optgroup ng-repeat=\"(group, options) in groups\"><div class=select-dropdown-optgroup-header ng-if=\"group && options.length\" ng-bind-html=\"getGroupLabel(group, options)\"></div><li class=select-dropdown-optgroup-option ng-init=\"isDisabled = getDisableWhen(option)\" ng-repeat=\"option in options\" ng-class=\"{\'active\': selectorPosition === groupPos[group] + $index, \'disabled\': isDisabled, \'ungroup\': !group}\" ng-click=\"isDisabled || addItem(option)\" ng-mouseenter=\"setSelection(groupPos[group] + $index)\" ng-bind-html=getDropdownLabel(option)></li></ul></div>");}]);
